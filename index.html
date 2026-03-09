@@ -29,13 +29,11 @@
         * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
         body { background-color: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; transition: background-color 0.8s ease; }
 
-        /* REVEAL SYSTEM */
         .reveal { opacity: 0; transform: translateY(30px); transition: opacity 1s ease, transform 1s cubic-bezier(0.23, 1, 0.32, 1); }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
-        /* --- CLOCK STYLES (Static on Top) --- */
         #digital-clock {
-            position: absolute; /* Bleibt oben beim Scrollen */
+            position: absolute;
             top: 40px;
             left: 40px;
             z-index: 10;
@@ -47,7 +45,6 @@
             opacity: 0.6;
         }
 
-        /* --- CURSOR FIX --- */
         #cursor { 
             position: fixed; 
             width: 8px; 
@@ -81,7 +78,6 @@
             border-color: transparent; 
         }
 
-        /* UI ELEMENTS */
         #ui-left-container { position: fixed; bottom: 25px; left: 25px; display: flex; gap: 12px; z-index: 10000; }
         .ui-btn { width: 55px; height: 55px; border-radius: 50%; background: var(--glass); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); color: var(--text); display: flex; justify-content: center; align-items: center; transition: 0.3s; pointer-events: auto; }
         .ui-btn:hover { border-color: var(--accent); transform: scale(1.1); }
@@ -102,7 +98,6 @@
 
         #progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: var(--accent); width: 0%; z-index: 10002; }
 
-        /* GALLERY & SLIDERS */
         .container { padding: 50px 5% 150px 5%; max-width: 1400px; margin: 0 auto; }
         .gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: 80px; }
         .item:nth-child(even) { margin-top: 100px; }
@@ -123,7 +118,6 @@
         .blink { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; animation: blinker 1.5s linear infinite; }
         @keyframes blinker { 50% { opacity: 0; } }
 
-        /* SECTIONS */
         .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 60px; }
         .info-card { background: var(--card-bg); padding: 40px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.05); transition: 0.4s; }
         .info-card:hover { border-color: var(--accent); transform: translateY(-5px); }
@@ -244,8 +238,8 @@
                     <button class="nav-btn prev" onclick="event.stopPropagation(); moveSlide('slider4', -1)">&#10094;</button>
                     <button class="nav-btn next" onclick="event.stopPropagation(); moveSlide('slider4', 1)">&#10095;</button>
                     <div class="slider-track" onclick="openLightbox(this)">
-                        <img src="Hassfurt.jpg" alt="Hassfurt 1">
-                        <img src="Hassfurt2.jpg" alt="Hassfurt 2">
+                        <img src="Hassfurt.JPG" alt="Hassfurt 1">
+                        <img src="Hassfurt2.JPG" alt="Hassfurt 2">
                     </div>
                     <div class="city-label">04 // HAßFURT</div>
                 </div>
@@ -285,14 +279,17 @@
     <footer style="padding: 100px 5% 50px 5%; text-align: center; opacity: 0.2; font-size: 0.65rem; letter-spacing: 5px;">
         &copy; 2026 NICH.ZUE83 // DESIGNED FOR THE STREETS
     </footer>
-    
+
+    <div style="text-align: center; padding-bottom: 40px; opacity: 0.8;">
+        <img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fprog-eiki.github.io%2Fcity-ghost-v1&count_bg=%2300ffa3&title_bg=%23333333&icon=&icon_color=%23E7E7E7&title=VISITORS&edge_flat=true" alt="Besucherzähler">
+    </div>
+
     <script>
         const sound = document.getElementById('ambient-sound');
         const soundBtn = document.getElementById('sound-toggle');
         const cursor = document.getElementById('cursor');
         const follower = document.getElementById('cursor-follower');
 
-        // --- CLOCK LOGIC ---
         function updateClock() {
             const now = new Date();
             document.getElementById('digital-clock').textContent = now.toLocaleTimeString('de-DE');
@@ -300,7 +297,6 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // AUDIO FADE
         let fadeInterval;
         function fadeAudio(target, duration = 500) {
             clearInterval(fadeInterval);
@@ -321,7 +317,6 @@
             else { fadeAudio(0); soundBtn.style.color = "var(--text)"; }
         });
 
-        // CURSOR
         let mouseX = 0, mouseY = 0, followerX = 0, followerY = 0; 
         document.addEventListener('mousemove', e => {
             mouseX = e.clientX; mouseY = e.clientY;
@@ -342,7 +337,6 @@
             el.addEventListener('mouseleave', () => follower.classList.remove('cursor-hover'));
         });
 
-        // SLIDER & REVEAL & THEME (Standard Logic)
         const states = {};
         function moveSlide(id, dir) {
             const container = document.getElementById(id);
@@ -395,18 +389,7 @@
             else document.getElementById('back-to-top').classList.remove('visible');
         });
         document.getElementById('back-to-top').addEventListener('click', () => window.scrollTo({top: 0, behavior: 'smooth'}));
-        function copyDiscord() { navigator.clipboard.writeText("NICH.ZUE83#0000"); alert("Discord Name kopiert!"); }    
+        function copyDiscord() { navigator.clipboard.writeText("NICH.ZUE83#0000"); alert("Discord Name kopiert!"); }
+    </script>
 </body>
-
 </html>
-
-
-
-
-
-
-
-
-
-
-
