@@ -29,8 +29,16 @@
         * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
         body { background-color: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; transition: background-color 0.8s ease; }
 
-        .reveal { opacity: 0; transform: translateY(30px); transition: opacity 1s ease, transform 1s cubic-bezier(0.23, 1, 0.32, 1); }
-        .reveal.active { opacity: 1; transform: translateY(0); }
+        /* REVEAL ANIMATION (IN & OUT) */
+        .reveal { 
+            opacity: 0; 
+            transform: translateY(50px); 
+            transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.23, 1, 0.32, 1); 
+        }
+        .reveal.active { 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
 
         #digital-clock {
             position: absolute;
@@ -86,7 +94,8 @@
         #back-to-top.visible { opacity: 1; visibility: visible; }
 
         #loader { position: fixed; inset: 0; background: #000; display: flex; justify-content: center; align-items: center; z-index: 100001; transition: 1s cubic-bezier(0.8, 0, 0.2, 1); }
-        .loader-content { font-family: 'Syncopate'; font-size: 2rem; letter-spacing: 15px; color: white; }
+        .loader-content { font-family: 'Syncopate'; font-size: 2rem; letter-spacing: 15px; color: white; text-align: center; }
+        .loader-bar { width: 0%; height: 2px; background: var(--accent); margin-top: 20px; transition: 0.5s; }
 
         nav { position: fixed; top: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 15px; z-index: 500; }
         nav a { color: var(--text); text-decoration: none; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; background: var(--glass); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); padding: 14px 28px; border-radius: 12px; transition: 0.3s; pointer-events: auto; }
@@ -113,6 +122,8 @@
         .slider-container:hover .nav-btn { opacity: 1; }
         .prev { left: 15px; } .next { right: 15px; }
         .city-label { position: absolute; bottom: 25px; left: 25px; z-index: 10; font-family: 'Syncopate'; font-size: 0.65rem; color: #fff; background: rgba(0,0,0,0.6); padding: 8px 15px; border-radius: 5px; }
+        
+        .exif-tag { position: absolute; bottom: 25px; right: 25px; font-size: 10px; opacity: 0.4; font-family: monospace; text-align: right; }
 
         .location-badge { display: inline-flex; align-items: center; gap: 10px; font-size: 0.6rem; letter-spacing: 2px; background: rgba(0, 255, 204, 0.1); padding: 8px 15px; border-radius: 30px; color: var(--accent); margin-bottom: 30px; border: 1px solid rgba(0, 255, 204, 0.2); }
         .blink { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; animation: blinker 1.5s linear infinite; }
@@ -134,6 +145,9 @@
         #lightbox.active { display: flex; }
         #lightbox img { max-width: 90%; max-height: 85vh; border-radius: 10px; box-shadow: 0 0 50px rgba(0,0,0,0.5); }
 
+        #toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--accent); color: #000; padding: 12px 25px; border-radius: 5px; font-family: 'Syncopate'; font-size: 0.65rem; z-index: 100000; opacity: 0; pointer-events: none; transition: 0.3s; }
+        #toast.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+
         @media (max-width: 900px) {
             .gallery { grid-template-columns: 1fr; gap: 40px; }
             .item:nth-child(even) { margin-top: 0; }
@@ -149,7 +163,14 @@
     <div id="cursor"></div>
     <div id="cursor-follower"></div>
     <div id="progress-bar"></div>
-    <div id="loader"><div class="loader-content">NICH.ZUE83</div></div>
+    <div id="loader">
+        <div class="loader-content">
+            NICH.ZUE83
+            <div class="loader-bar" id="loader-bar"></div>
+        </div>
+    </div>
+
+    <div id="toast">DISCORD ID COPIED</div>
 
     <div id="lightbox" onclick="this.classList.remove('active')">
         <img id="lightbox-img" src="">
@@ -198,11 +219,12 @@
                     <button class="nav-btn prev" onclick="event.stopPropagation(); moveSlide('slider1', -1)">&#10094;</button>
                     <button class="nav-btn next" onclick="event.stopPropagation(); moveSlide('slider1', 1)">&#10095;</button>
                     <div class="slider-track" onclick="openLightbox(this)">
-                        <img src="Coburg.jpg" alt="Coburg 1">
-                        <img src="Coburg2.jpg" alt="Coburg 2">
-                        <img src="Coburg 3.jpg" alt="Coburg 3">
+                        <img src="Coburg.jpg" alt="Coburg 1" loading="lazy">
+                        <img src="Coburg2.jpg" alt="Coburg 2" loading="lazy">
+                        <img src="Coburg 3.jpg" alt="Coburg 3" loading="lazy">
                     </div>
                     <div class="city-label">01 // COBURG</div>
+                    <div class="exif-tag">MOBILE_SENS_ISO_AUTO<br>JOURNAL_ENTRY_2026</div>
                 </div>
             </div>
 
@@ -212,10 +234,11 @@
                     <button class="nav-btn prev" onclick="event.stopPropagation(); moveSlide('slider2', -1)">&#10094;</button>
                     <button class="nav-btn next" onclick="event.stopPropagation(); moveSlide('slider2', 1)">&#10095;</button>
                     <div class="slider-track" onclick="openLightbox(this)">
-                        <img src="Lichtenfels.jpg" alt="Lichtenfels 1">
-                        <img src="Lichtenfels2.jpg" alt="Lichtenfels 2">
+                        <img src="Lichtenfels.jpg" alt="Lichtenfels 1" loading="lazy">
+                        <img src="Lichtenfels2.jpg" alt="Lichtenfels 2" loading="lazy">
                     </div>
                     <div class="city-label">02 // LICHTENFELS</div>
+                    <div class="exif-tag">MOBILE_SENS_ISO_AUTO<br>JOURNAL_ENTRY_2026</div>
                 </div>
             </div>
 
@@ -225,10 +248,11 @@
                     <button class="nav-btn prev" onclick="event.stopPropagation(); moveSlide('slider3', -1)">&#10094;</button>
                     <button class="nav-btn next" onclick="event.stopPropagation(); moveSlide('slider3', 1)">&#10095;</button>
                     <div class="slider-track" onclick="openLightbox(this)">
-                        <img src="Nürnberg.jpg" alt="Nürnberg 1">
-                        <img src="Nürnberg2.jpg" alt="Nürnberg 2">
+                        <img src="Nürnberg.jpg" alt="Nürnberg 1" loading="lazy">
+                        <img src="Nürnberg2.jpg" alt="Nürnberg 2" loading="lazy">
                     </div>
                     <div class="city-label">03 // NÜRNBERG</div>
+                    <div class="exif-tag">MOBILE_SENS_ISO_AUTO<br>JOURNAL_ENTRY_2026</div>
                 </div>
             </div>
 
@@ -238,10 +262,11 @@
                     <button class="nav-btn prev" onclick="event.stopPropagation(); moveSlide('slider4', -1)">&#10094;</button>
                     <button class="nav-btn next" onclick="event.stopPropagation(); moveSlide('slider4', 1)">&#10095;</button>
                     <div class="slider-track" onclick="openLightbox(this)">
-                        <img src="Hassfurt.jpg" alt="Hassfurt 1">
-                        <img src="Hassfurt2.jpg" alt="Hassfurt 2">
+                        <img src="Hassfurt.jpg" alt="Hassfurt 1" loading="lazy">
+                        <img src="Hassfurt2.jpg" alt="Hassfurt 2" loading="lazy">
                     </div>
                     <div class="city-label">04 // HAßFURT</div>
+                    <div class="exif-tag">MOBILE_SENS_ISO_AUTO<br>JOURNAL_ENTRY_2026</div>
                 </div>
             </div>
         </div>
@@ -349,6 +374,7 @@
             track.style.transform = `translateX(-${states[id] * 100}%)`;
             counter.innerText = `${states[id] + 1} / ${slides.length}`;
         }
+
         function openLightbox(track) {
             const id = track.parentElement.id;
             const idx = states[id] || 0;
@@ -356,9 +382,22 @@
             document.getElementById('lightbox').classList.add('active');
         }
 
+        // --- VERBESSERTER OBSERVER FÜR HIN- UND HER-ANIMATION ---
+        const observerOptions = {
+            threshold: 0.15
+        };
+
         const observer = new IntersectionObserver(entries => {
-            entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('active'); });
-        }, { threshold: 0.1 });
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                } else {
+                    // Nimmt die Klasse wieder weg, wenn das Element aus dem Sichtfeld scrollt
+                    entry.target.classList.remove('active');
+                }
+            });
+        }, observerOptions);
+
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
         let stage = 0;
@@ -370,8 +409,11 @@
         });
 
         window.addEventListener('load', () => {
+            const bar = document.getElementById('loader-bar');
+            bar.style.width = '100%';
             setTimeout(() => {
                 document.getElementById('loader').style.transform = 'translateY(-100%)';
+                // Kurze Verzögerung für Titel-Animation
                 setTimeout(() => {
                     document.getElementById('digital-clock').classList.add('active');
                     document.getElementById('loc-badge').classList.add('active');
@@ -388,9 +430,15 @@
             if (window.scrollY > 500) document.getElementById('back-to-top').classList.add('visible');
             else document.getElementById('back-to-top').classList.remove('visible');
         });
+
         document.getElementById('back-to-top').addEventListener('click', () => window.scrollTo({top: 0, behavior: 'smooth'}));
-        function copyDiscord() { navigator.clipboard.writeText("NICH.ZUE83#0000"); alert("Discord Name kopiert!"); }
+
+        function copyDiscord() { 
+            navigator.clipboard.writeText("NICH.ZUE83#0000"); 
+            const toast = document.getElementById('toast');
+            toast.classList.add('visible');
+            setTimeout(() => toast.classList.remove('visible'), 2500);
+        }
     </script>
 </body>
 </html>
-
